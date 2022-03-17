@@ -1,5 +1,5 @@
 # cryptography
-Repo for some cryptography projectscreated in python
+Repo for some cryptography projects created in python
 
 
 ## Prerequisites
