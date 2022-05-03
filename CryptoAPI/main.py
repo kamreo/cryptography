@@ -1,73 +1,55 @@
-from typing import Optional
+from cryptography import Cryptography
 from fastapi import FastAPI
 from . import Cryptography
+from pydantic import BaseModel
+
+class Body(BaseModel):
+    value: str
+
 
 app = FastAPI()
+cryptography = Cryptography()
 
 #symetric
 
 @app.get("/symetric/key")
 def generate_symetric_key():
     """Returns randomly generated symetric key as HEX"""
-    return {Cryptography.gen_sym_key()}
+    return Cryptography.gen_sym_key()
 
 @app.post("/symetric/key/")
-def set_symetric_key():
+def set_symetric_key(body: Body):
     """Sets given symetric HEX key on a server"""
-    return {"Hello": "World"}
+    return Cryptography.set_sym_key(body.value)
 
 @app.post("/symetric/encode")
-def encode_message_symmetric():
+def encode_message_symmetric(body: Body):
     """Accepts message and returns encrypted string as a response"""
-    return {"Hello": "World"}
+    return cryptography.encrypt_sym(body.value)
 
 @app.post("/symetric/decode")
-def decode_message_symmetric():
+def decode_message_symmetric(body: Body):
     """Accepts encrypted message and returns decrypted one"""
-    return {"Hello": "World"}
+    return cryptography.decrypt_sym(body.value)
 
 #asymetric
 
 @app.get("/asymetric/key")
-def generate_symetric_key():
+def generate_asymetric_key():
     """Returns new public and private key as HEX and sets it on server"""
-    return {"Hello": "World"}
-
-@app.get("/asymetric/key/ssh")
-def set_symetric_key():
-    """returns public and private key as HEX in OpenSSH format"""
-    return {"Hello": "World"}
+    return cryptography.gen_asym_key()
 
 @app.post("/asymetric/key")
-def encode_message_symmetric():
+def set_asymetric_key(body: Body):
     """sets given public and private key on server as HEX"""
-    return {"Hello": "World"}
-
-@app.post("/asymetric/verify")
-def decode_message_symmetric():
-    """using current private key, signs given message and returns it signed"""
-    return {"Hello": "World"}
-
-@app.post("/asymetric/sign")
-def decode_message_symmetric():
-    """using current public key, verifies if given message was encrypted by it"""
-    return {"Hello": "World"}
+    return Cryptography.set_asym_keys(body.value)
 
 @app.post("/asymetric/encode")
-def decode_message_symmetric():
+def decode_message_symmetric(body: Body):
     """encrypts given message"""
-    return {"Hello": "World"}
+    return cryptography.encrypt_asym(body.value)
 
 @app.post("/asymetric/decode")
-def decode_message_symmetric():
+def decode_message_symmetric(body: Body):
     """decrypts given message"""
-    return {"Hello": "World"}
-
-
-
-
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+    return cryptography.decrypt_asym(body.value)
